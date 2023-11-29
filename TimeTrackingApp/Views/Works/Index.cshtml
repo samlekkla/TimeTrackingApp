@@ -1,0 +1,18 @@
+﻿@model List<WorksIndexViewModel>
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+@foreach (var item in Model)
+{
+    <div>
+        <h4>@item.EmployeeName</h4>
+        <p>@item.WorkDescription</p>
+        <p>@item.WorkDate</p>
+        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+    </div>
+}
+
+<a href="/Works/Create">Create work</a>
