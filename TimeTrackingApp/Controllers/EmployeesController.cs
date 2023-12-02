@@ -79,6 +79,22 @@ namespace TimeTrackingApp.Controllers
             return Redirect("/Employees");
         }
 
+        [HttpPost]
+        public IActionResult Delete(string Id)
+        {
+            ObjectId employeeId = new ObjectId(Id);
+            MongoClient dbClient = new MongoClient();
+
+            var database = dbClient.GetDatabase("timetracking_app");
+            var collection = database.GetCollection<Employee>("employees");
+
+            collection.DeleteOne(e => e.Id == employeeId);
+
+            return Redirect("/Employees");
+
+        }
+
+
 
     }
 }

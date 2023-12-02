@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using System;
 using TimeTrackingApp.Models;
 
 namespace TimeTrackingApp.Controllers
@@ -9,29 +10,14 @@ namespace TimeTrackingApp.Controllers
     {
         public IActionResult Index()
         {
-            List<WorksIndexViewModel> viewModel = new List<WorksIndexViewModel>();
-
             MongoClient dbClient = new MongoClient();
 
             var database = dbClient.GetDatabase("timetracking_app");
-            var worksCollection = database.GetCollection<Work>("works");
-            var employeesCollection = database.GetCollection<Employee>("employees");
+            var collection = database.GetCollection<Work>("works");
 
-            List<Work> works = worksCollection.Find(w => true).ToList();
+            List<Work> works = collection.Find(w => true).ToList();
 
-            foreach (Work work in works)
-            {
-                ObjectId employeeId = new ObjectId(work.EmployeeId);
-                Employee employee = employeesCollection.Find(e => e.Id == employeeId).FirstOrDefault();
-
-                WorksIndexViewModel model = new WorksIndexViewModel();
-                model.EmployeeName = employee.Name;
-                model.WorkDescription = work.Description;
-                model.WorkDate = work.WorkDate;
-                viewModel.Add(model);
-            }
-
-            return View(viewModel);
+            return View(works);
         }
 
         public IActionResult Create() //Skapa listan
@@ -57,66 +43,61 @@ namespace TimeTrackingApp.Controllers
             return Redirect("/Works");
         }
 
-        public IActionResult Edit(string id)
+        public IActionResult Show(string Id) //Visa enskilda employee
         {
-            if (string.IsNullOrEmpty(id))
-            {
-                return BadRequest();
-            }
-
+            ObjectId workId = new ObjectId(Id);
             MongoClient dbClient = new MongoClient();
+
             var database = dbClient.GetDatabase("timetracking_app");
-            var worksCollection = database.GetCollection<Work>("works");
-            var employeesCollection = database.GetCollection<Employee>("employees");
+            var collection = database.GetCollection<Work>("works");
 
-            ObjectId workId = new ObjectId(id);
-            Work work = worksCollection.Find(w => w.Id == workId).FirstOrDefault();
+            Work work = collection.Find(w => w.Id == workId).FirstOrDefault(); //Hämta enskilda book
 
-            if (work == null)
-            {
-                return NotFound();
-            }
+            return View(work);
 
-            ObjectId employeeId = new ObjectId(work.EmployeeId);
-            Employee employee = employeesCollection.Find(e => e.Id == employeeId).FirstOrDefault();
+        }
 
-            WorksIndexViewModel model = new WorksIndexViewModel
-            {
-                Id = work.Id,
-                EmployeeName = employee.Name,
-                WorkDescription = work.Description,
-                WorkDate = work.WorkDate
-            };
+        public IActionResult Edit(string Id)
+        {
+            ObjectId workId = new ObjectId(Id);
+            MongoClient dbClient = new MongoClient();
 
-            return View(model);
+            var database = dbClient.GetDatabase("timetracking_app");
+            var collection = database.GetCollection<Work>("works");
+
+            Work work = collection.Find(w => w.Id == workId).FirstOrDefault(); //Hämta enskilda book
+
+            return View(work);
         }
 
         [HttpPost]
-        public IActionResult Edit(WorksIndexViewModel model)
+        public IActionResult Edit(string Id, Work work)
         {
-            if (ModelState.IsValid)
-            {
-                MongoClient dbClient = new MongoClient();
-                var database = dbClient.GetDatabase("timetracking_app");
-                var worksCollection = database.GetCollection<Work>("works");
+            ObjectId workId = new ObjectId(Id);
+            MongoClient dbClient = new MongoClient();
 
-                ObjectId workId = model.Id;
-                Work existingWork = worksCollection.Find(w => w.Id == workId).FirstOrDefault();
+            var database = dbClient.GetDatabase("timetracking_app");
+            var collection = database.GetCollection<Work>("works");
 
-                if (existingWork == null)
-                {
-                    return NotFound();
-                }
+            work.Id = workId;
+            collection.ReplaceOne(w => w.Id == workId, work); //Ta emot 2 parametrar:
 
-                existingWork.Description = model.WorkDescription;
-                existingWork.WorkDate = model.WorkDate;
+            return Redirect("/Works");
+        }
 
-                worksCollection.ReplaceOne(w => w.Id == workId, existingWork);
+        [HttpPost]
+        public IActionResult Delete(string Id)
+        {
+            ObjectId workId = new ObjectId();
+            MongoClient dbClient = new MongoClient();
 
-                return RedirectToAction("Index");
-            }
+            var database = dbClient.GetDatabase("timetracking_app");
+            var collection = database.GetCollection<Work>("works");
 
-            return View(model);
+            collection.DeleteOne(w => w.Id == workId);
+
+            return Redirect("/Works");
+
         }
 
     }

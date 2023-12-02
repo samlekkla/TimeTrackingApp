@@ -3,3 +3,14 @@
 *@
 @{
 }
+
+<form action="/Works/Edit/@Model.Id" method="post">
+
+    <label for="WorkDescription">WorkDescription:</label>
+    <input type="text" name="WorkDescription" placeholder="Work Description" value="@Model.WorkDescription"/>
+    <br>
+    <label for="WorkDate">Work Date:</label>
+    <input type="datetime-local" id="WorkDate" name="WorkDate" placeholder="Work Date" value="@Model.WorkDate"/>
+    <br>
+    <button>Save</button>
+</form>

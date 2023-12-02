@@ -1,5 +1,4 @@
-﻿@model List<Employee>
-@*
+﻿@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
@@ -7,13 +6,11 @@
 
 <form action="/Works/Create" method="post">
 
-    <select name="EmployeeId">
-        @foreach (Employee employee in Model)
-        {
-            <option value="@employee.Id">@employee.Name</option>
-        }
-    </select>
-    <input type="text" name="Description" placeholder="Description" />
-    <input type="date" name="Date" placeholder="Date"/>
+    <label for="WorkDescription">WorkDescription:</label>
+    <input type="text" name="WorkDescription" placeholder="Work Description" />
+    <br>
+    <label for="WorkDate">Work Date:</label>
+    <input type="datetime-local" id="WorkDate" name="WorkDate" placeholder="Work Date" />
+    <br>
     <button>Save</button>
 </form>

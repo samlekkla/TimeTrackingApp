@@ -7,8 +7,13 @@
 
 @foreach (Employee employee in Model)
 {
-    <p>@employee.Name <a href="/Employees/Show/@employee.Id">Show</a></p> 
+    <p>@employee.Name <a href="/Employees/Show/@employee.Id">Show</a>
+        <form action="/Employees/Delete/@employee.Id" method="post">
+            <button>Delete</button>
+        </form>
+    </p>
+   
+   
 }
-
 
 <a href="/Employees/Create">Create employee</a>

@@ -1,0 +1,11 @@
+﻿@model Work
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+<h2>@Model.WorkDescription</h2>
+<p>@DateTime.Parse(Model.WorkDate).ToString("yyyy-MM-dd HH:mm")</p>
+
+<p><a href="/Works/Edit/@Model.Id">Edit work</a></p>
