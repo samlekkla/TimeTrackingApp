@@ -88,7 +88,7 @@ namespace TimeTrackingApp.Controllers
         [HttpPost]
         public IActionResult Delete(string Id)
         {
-            ObjectId workId = new ObjectId();
+            ObjectId workId = new ObjectId(Id);
             MongoClient dbClient = new MongoClient();
 
             var database = dbClient.GetDatabase("timetracking_app");
