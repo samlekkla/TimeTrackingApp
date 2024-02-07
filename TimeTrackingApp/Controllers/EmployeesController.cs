@@ -45,7 +45,7 @@ namespace TimeTrackingApp.Controllers
             var database = dbClient.GetDatabase("timetracking_app");
             var collection = database.GetCollection<Employee>("employees");
 
-            Employee employee = collection.Find(e => e.Id == employeeId).FirstOrDefault(); //Hämta enskilda book
+            Employee employee = collection.Find(e => e.Id == employeeId).FirstOrDefault(); //Hämta enskilda arbetare.
 
             return View(employee);
 
